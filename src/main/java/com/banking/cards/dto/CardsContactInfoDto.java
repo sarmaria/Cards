@@ -2,9 +2,10 @@ package com.banking.cards.dto;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = CardsContactInfoDto.PREFIX)
-public record CardsContactInfoDto(String message, Map<String, String> contactDetails, String onCallSupport) {
+public record CardsContactInfoDto(String message, Map<String, String> contactDetails, List<String> onCallSupport) {
     static final String PREFIX = "cards";
 }
