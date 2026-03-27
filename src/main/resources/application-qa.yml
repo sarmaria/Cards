@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: "qa"
+build:
+  info: "v2"
+cards:
+  message: "Welcome to cards APIs"
+  contactDetails:
+    name: "Jane Doe"
+    email: "janedoe@email.com"
+    role: "QA"
+  onCallSupport:
+    - (111) 12345-1252
+    - (222) 12345-1253

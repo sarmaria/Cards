@@ -2,6 +2,7 @@ package com.banking.cards.controller;
 
 import com.banking.cards.constants.CardsConstants;
 import com.banking.cards.dto.CardDto;
+import com.banking.cards.dto.CardsContactInfoDto;
 import com.banking.cards.dto.ErrorResponseDto;
 import com.banking.cards.dto.ResponseDto;
 import com.banking.cards.service.ICardService;
@@ -14,6 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,11 +28,20 @@ import org.springframework.web.bind.annotation.*;
 )
 @RestController
 @RequestMapping("/api")
-@AllArgsConstructor
 @Validated
 public class CardsController {
 
     private final ICardService cardService;
+    private final Environment environment;
+    private final CardsContactInfoDto cardsContactInfoDto;
+    private final String buildInfo;
+
+    public CardsController(ICardService cardService, Environment environment, CardsContactInfoDto cardsContactInfoDto,  @Value("${build.info}") String buildInfo) {
+        this.cardService = cardService;
+        this.environment = environment;
+        this.cardsContactInfoDto = cardsContactInfoDto;
+        this.buildInfo = buildInfo;
+    }
 
     @Operation(
             summary = "Create Card REST API",
@@ -143,5 +155,27 @@ public class CardsController {
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(new ResponseDto(CardsConstants.STATUS_417, HttpStatus.EXPECTATION_FAILED));
         }
+    }
+
+
+    @Operation(summary = "Fetch Build Info Rest API")
+    @ApiResponse(responseCode = "200")
+    @GetMapping("/build-info")
+    public ResponseEntity<String> buildInfo(){
+        return ResponseEntity.status(HttpStatus.OK).body(buildInfo);
+    }
+
+    @Operation(summary = "Fetch Java Home Info  Rest API")
+    @ApiResponse(responseCode = "200")
+    @GetMapping("/java-info")
+    public ResponseEntity<String> javaInfo(){
+        return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME"));
+    }
+
+    @Operation(summary = "Fetch Contact Info Rest API")
+    @ApiResponse(responseCode = "200")
+    @GetMapping("/contact-info")
+    public ResponseEntity<CardsContactInfoDto> contactInfo(){
+        return ResponseEntity.status(HttpStatus.OK).body(cardsContactInfoDto);
     }
 }
