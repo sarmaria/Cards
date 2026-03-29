@@ -35,7 +35,29 @@ management:
   endpoints:
     web:
       exposure:
-        include:
-          - "refresh"
-          - "busrefresh"
+        include: "*"
+  # Eureka server will use this info actuator point to fetch the info detail of the service
+  info:
+    env:
+      enabled: true
+  # To provide shutdown endpoint for demo purpose only
+  endpoint:
+    shutdown:
+      access: unrestricted
 
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: "http://localhost:8070/eureka/"
+    fetch-registry: true
+    register-with-eureka: true
+
+# Info details provided by the info actuator point
+info:
+  app:
+    name: "cards"
+    description: "Banking cards application"
+    version: "1.0.0"
