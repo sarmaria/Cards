@@ -14,7 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @Validated
 public class CardsController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CardsController.class);
 
     private final ICardService cardService;
     private final Environment environment;
@@ -80,7 +83,8 @@ public class CardsController {
             )
     })
     @GetMapping("/fetch")
-    public ResponseEntity<CardDto> fetch(@RequestParam String mobileNumber) {
+    public ResponseEntity<CardDto> fetch(@RequestHeader(name = CardsConstants.TRACE_ID, required = false) String traceId, @RequestParam String mobileNumber) {
+        logger.debug("Trace-Id of the current request {}", traceId);
         CardDto cardDto = cardService.fetchCardDetails(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(cardDto);
     }
